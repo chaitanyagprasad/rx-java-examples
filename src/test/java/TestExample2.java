@@ -9,4 +9,29 @@ public class TestExample2 {
         example2.onNextDemo();
     }
 
+    @Test
+    public void testOnErrorDemo() {
+        example2.onErrorDemo();
+    }
+
+    @Test
+    public void testIntermediateOpsDemo() {
+        example2.intermediateOpsDemo();
+    }
+
+    @Test
+    public void testObservableDotJustDemo() {
+        example2.observableDotJustDemo();
+    }
+
+    @Test
+    public void testObservableDotFromIterableDemo() {
+        example2.observableDotFromIterable();
+    }
+
+    @Test
+    public void testImplementingObserverDemo() {
+        example2.implementingObserverDemo();
+    }
+
 }
