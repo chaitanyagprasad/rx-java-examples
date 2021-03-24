@@ -34,4 +34,24 @@ public class TestExample2 {
         example2.implementingObserverDemo();
     }
 
+    @Test
+    public void testObserverWithLambdasDemo(){
+        example2.observerWithLambdasDemo();
+    }
+
+    @Test
+    public void testColdObservableDemo() {
+        example2.coldObservableDemo();
+    }
+
+    @Test
+    public void testConnectableObservableDemo() {
+        example2.connectableObservableDemo();
+    }
+
+    @Test
+    public void testObservableDotRangeDemo() {
+        example2.observableDotRangeDemo();
+    }
+
 }

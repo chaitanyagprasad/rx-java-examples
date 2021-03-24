@@ -2,12 +2,18 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observables.ConnectableObservable;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Example2 {
+
+    private final Observable<String> observableSource = Observable.just("Bruce", "Ed", "Tony", "Alfred", "Robin");
+    private final Consumer<String> observerOne = s -> System.out.println("Observer 1 => "+s);
+    private final Consumer<String> observerTwo = s -> System.out.println("Observer 2 => "+s);
 
     /*
     * An Observable works on 3 kinds of events: onNext(), onComplete() and onError().
@@ -129,6 +135,66 @@ public class Example2 {
         };
 
         observable.map(String::length).subscribe(observer);
+    }
+
+    /*
+    * Implementing observer as in implementingObserverDemo() is cumbersome.
+    * Therefore, we can use the subscribe() that takes lambdas as arguments.
+    * While implementing the lambda, only the observer impl for onNext() is mandatory.
+    * The subscribe() returns a Disposable. This Disposable object allow us to disconnect the observer and the observable.
+    * */
+    public void observerWithLambdasDemo() {
+        Observable<String> observable = Observable.just("Bruce", "Ed", "Tony", "Alfred", "Robin");
+
+        Consumer<Integer> onnext = s -> System.out.println("Received => "+s);
+        Action onComplete = () -> System.out.println("Done");
+        Consumer<Throwable> onError = Throwable::printStackTrace;
+
+        observable.map(String::length).subscribe(onnext, onError, onComplete);
+
+    }
+
+    /*
+    * A cold observable will replay all the emissions to each observer subscribing to it.
+    * In the below example, the observable will first play all emissions to first observer, call onComplete() on it and repeat the same on the second observer.
+    * Both observers receive the same dataset via separate streams.
+    * Each observers are free to manipulate the emissions as the source will not be mutated.
+    * Observables emitting finite data are cold in nature.
+    * */
+    public void coldObservableDemo() {
+
+        this.observableSource.subscribe(observerOne);
+        this.observableSource.subscribe(observerTwo);
+
+        System.out.println("########################## Mutation demo ##########################");
+        this.observableSource.subscribe(observerOne);
+        this.observableSource.map(String::length).subscribe(s -> System.out.println("Observer 2 => "+s));
+
+    }
+
+    /*
+    * A hot observable transmits emissions to all observers simultaneously.
+    * If the observer A is not subscribed to an observable at the start of emissions but subscribes 5 secs after emissions begin, A will miss emissions done in the 5 secs.
+    * Hot observables represent events. These events can carry some data with them.
+    * A cold observable can be converted to a hot observable by using ConnectableObservable.
+    * To convert a cold observable to a hot observable, we need to call publish() on the cold observable and it will yield a ConnectableObservable.
+    * The connect() on the ConnectableObservable will start the emissions.
+    * The ConnectableObservable forces emissions to go to all observers simultaneously. This is called multicasting.
+    * ConnectableObservable prevents replay of data to each observer and avoids a performance overhead.
+    * */
+    public void connectableObservableDemo() {
+        ConnectableObservable<String> connectableObservable = observableSource.publish();
+        connectableObservable.subscribe(observerOne);
+        connectableObservable.subscribe(observerTwo);
+        connectableObservable.connect();
+    }
+
+    /*
+    * Use Observable.range(start, emissionCount) to emit consecutive emissionCount number of integers from start(inclusive)
+    * Use Observable.rangeLong(start, emissionCount) for larger numbers.
+    * */
+    public void observableDotRangeDemo() {
+        Observable.range(5,5).subscribe(s -> System.out.println("Received => "+s) );
     }
 
 }
