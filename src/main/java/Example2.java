@@ -197,4 +197,42 @@ public class Example2 {
         Observable.range(5,5).subscribe(s -> System.out.println("Received => "+s) );
     }
 
+    /*
+    * Use Observable.empty() to create an empty observable
+    * The output will be the contents of onComplete only.
+    * An empty observable is RxJava concept of a null.
+    * */
+    public void observableDotEmptyDemo() {
+        Observable<String> observable = Observable.empty();
+
+        Consumer<String> onnext = s -> System.out.println("Received => "+s);
+        Action onComplete = () -> System.out.println("Done");
+        Consumer<Throwable> onError = Throwable::printStackTrace;
+
+        observable.subscribe(onnext, onError, onComplete);
+    }
+
+    /*
+    * If you want to never call onComplete() then use Observable.never().
+    * This leaves the observers waiting forever for emission but there are no emissions made.
+    * */
+    public void observableDotNeverDemo() {
+        Observable<String> observable = Observable.never();
+
+        Consumer<String> onnext = s -> System.out.println("Received => "+s);
+        Action onComplete = () -> System.out.println("Done");
+        Consumer<Throwable> onError = Throwable::printStackTrace;
+
+        observable.subscribe(onnext, onError, onComplete);
+        sleep(5000);
+
+    }
+
+    public void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

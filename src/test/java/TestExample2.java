@@ -54,4 +54,14 @@ public class TestExample2 {
         example2.observableDotRangeDemo();
     }
 
+    @Test
+    public void testObservableDotEmptyDemo(){
+        example2.observableDotEmptyDemo();
+    }
+
+    @Test
+    public void testObservableDotNeverDemo() {
+        example2.observableDotNeverDemo();
+    }
+
 }
