@@ -8,6 +8,8 @@ import io.reactivex.observables.ConnectableObservable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Example2 {
 
@@ -234,5 +236,32 @@ public class Example2 {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    * Suppose we want to create a state for each observer, the above observable factories cannot capture changes in their parameters.
+    * This situation will lead the observable to emit obsolete emissions to the new observer.    *
+    * */
+
+    public void problemWithCurrentObservableFactories() {
+        int start = 1;
+        int count = 5;
+
+        Observable<Integer> source = Observable.range(start, count);
+
+        source.subscribe(el -> System.out.println("Observer 1 : "+el));
+
+        /* change in the parameter count */
+        count = 10;
+
+        source.subscribe(el -> System.out.println("Observer 2 : "+el)); /* this observable will have the same values as Observer 1 and change is count is not captured */
+    }
+
+    /*
+    * By using Observable.defer() we can create a new observable for every state change.
+    * The above method accepts a lambda on how to create an observable for every state change.
+    * */
+    public void observableDotDeferDemo() {
+
     }
 }

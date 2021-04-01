@@ -64,4 +64,9 @@ public class TestExample2 {
         example2.observableDotNeverDemo();
     }
 
+    @Test
+    public void testProblemWithCurrentObservableFactories() {
+        example2.problemWithCurrentObservableFactories();
+    }
+
 }
